@@ -1,0 +1,7 @@
+.content {
+    height: 99vh;
+    width: 72vh;
+    margin: 0 auto;
+    background-image: url("https://cdn.bulbagarden.net/upload/9/94/AlakazamBaseSet1.jpg");
+    background-size: contain
+}
