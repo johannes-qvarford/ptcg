@@ -1,3 +1,5 @@
 ./debug
 .vscode
-.cache
+.idea
+*.iml
+target
