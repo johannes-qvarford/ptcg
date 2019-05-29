@@ -4,12 +4,6 @@ import java.net.http.HttpClient
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-private class NoCache : Cache {
-    override fun computeIfAbsent(id: String, compute: () -> ByteArray): ByteArray {
-        return compute()
-    }
-}
-
 class WebBulbapediaDownloaderTest {
 
     @Test fun downloadExpansionsDocument_containsBaseSetExpansionLink() {

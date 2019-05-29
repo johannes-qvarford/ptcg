@@ -18,6 +18,7 @@ data class FilesystemCache(private val rootDirectory: Path) : Cache {
 
         val computed = compute()
         ensureRootDirectoryExists()
+        f.parentFile.mkdirs()
         f.writeBytes(computed)
 
         return computed
