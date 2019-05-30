@@ -4,6 +4,8 @@ This can be dissolved into the following steps.
 
 * (DONE) Be able to cache resources to file system.
 * (DONE) Download and cache resources from Bulbapedia.
-* Scrape documents to discover what resources to download.
-* Scrape documents to extract expansion information.
+* (DONE) Scrape documents to discover what resources to download.
+* (DONE) Scrape documents to extract expansion information.
 * Scrape documents to extract card information.
+* Write to generated resources directory.
+* Progress logging with Maven.

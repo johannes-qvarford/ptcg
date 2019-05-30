@@ -18,20 +18,30 @@ interface BulbapediaDownloader {
     fun downloadResource(url: String): ByteArray
 }
 
+fun String.toBulbapedia() =
+    this.replace(' ', '_')
+        .replace("%26", "&")
+
+fun String.fromBulpapedia() =
+    this.replace('_', ' ')
+        .replace("&", "%26")
+
 data class WebBulbapediaDownloader(val client: HttpClient, val cache: Cache) : BulbapediaDownloader {
 
     override fun downloadExpansionsDocument() = getWiki("List_of_Pok%C3%A9mon_Trading_Card_Game_expansions")
 
-    override fun downloadExpansionDocument(expansion: String) = getWiki("${expansion}_(TCG)")
+    override fun downloadExpansionDocument(expansion: String) = getWiki("${expansion}_(TCG)".toBulbapedia())
 
-    override fun downloadCardDocument(expansion: String, index: Int, name: String) = getWiki("${name}_(${expansion}_$index)")
+    override fun downloadCardDocument(expansion: String, index: Int, name: String) =
+        getWiki("${name}_(${expansion}_$index)".toBulbapedia())
 
-    private fun getWiki(relativePath: String): String = String(get("$WIKI_URL/$relativePath"), Charsets.UTF_8)
+    private fun getWiki(relativePath: String): String =
+        get("$WIKI_URL/$relativePath".replace(' ', '_')).toUtf8String()
 
     override fun downloadResource(url: String): ByteArray = get(url)
 
     fun get(url: String): ByteArray {
-        val base64Url = Base64.getUrlEncoder().encodeToString(url.toByteArray(Charsets.UTF_8))
+        val base64Url = Base64.getUrlEncoder().encodeToString(url.toUtf8ByteArray())
         val cacheId = "bulbapedia/$base64Url"
         return cache.computeIfAbsent(cacheId) {
             val request = HttpRequest.newBuilder()

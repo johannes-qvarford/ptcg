@@ -6,14 +6,33 @@ import kotlin.test.assertTrue
 class BulbapediaScraperTest {
 
     @Test fun scrapeForExpansions_onFixedHtml_returnsExpansions() {
-        val scraper = BulbapediaScraper(downloader = ResourcesBulbapediaDownloader(), cache = NoCache())
+        val scraper = newScraper()
 
         val root = scraper.scrapeForExpansions()
         val someExpansions = setOf(
-            Expansion(name = "Base_Set"),
-            Expansion(name = "Unified_Minds")
+            Expansion(name = "Base Set"),
+            Expansion(name = "Unified Minds")
         )
 
         assertTrue(root.expansions.toSet().containsAll(someExpansions))
     }
+
+    @Test fun scrapeForCards_onFixedBaseSetHtml_returnsBaseSetCards() {
+        val scraper = newScraper()
+        val expansionsRoot = ExpansionsRoot(
+            expansions = setOf(Expansion(name = "Base Set"))
+        )
+
+        val roots: Set<CardsRoot> = scraper.scrapeForCards(expansionsRoot)
+        val someCards = setOf(
+            Card(expansion = "Base Set", index = 1, name = "Alakazam"),
+            Card(expansion = "Base Set", index = 102, name = "Water Energy")
+        )
+
+        val cards: Set<Card> = roots.firstOrNull()!!.cards
+        assertTrue(cards.toSet().containsAll(someCards))
+    }
+
+    private fun newScraper(): Scraper = BulbapediaScraper(downloader = ResourcesBulbapediaDownloader(), cache = NoCache())
 }
+

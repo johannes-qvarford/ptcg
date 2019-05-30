@@ -17,7 +17,7 @@ class WebBulbapediaDownloaderTest {
     @Test fun downloadExpansionDocument_forBaseSet_containsAlakazamCardLink() {
         val downloader = newDownloader()
 
-        val document: String = downloader.downloadExpansionDocument("Base_Set")
+        val document: String = downloader.downloadExpansionDocument("Base Set")
 
         assertTrue(document.contains("/wiki/Alakazam_(Base_Set_1)"))
     }
@@ -25,7 +25,7 @@ class WebBulbapediaDownloaderTest {
     @Test fun downloadCardDocument_forAlakazamBaseSet1_containsImageLink() {
         val downloader = newDownloader()
 
-        val document: String = downloader.downloadCardDocument(name = "Alakazam", expansion = "Base_Set", index = 1)
+        val document: String = downloader.downloadCardDocument(name = "Alakazam", expansion = "Base Set", index = 1)
 
         assertTrue(document.contains("/wiki/File:AlakazamBaseSet1.jpg"))
     }
