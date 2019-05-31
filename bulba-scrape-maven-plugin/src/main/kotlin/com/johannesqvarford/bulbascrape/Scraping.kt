@@ -22,44 +22,22 @@ private fun Matcher.groups(): Sequence<String> {
     }
 }
 
-data class Expansion(val name: String)
-data class ExpansionsRoot(val expansions: Set<Expansion>)
-data class Card(val expansion: String, val index: Int, val name: String)
-data class CardsRoot(val cards: Set<Card>)
+data class ExpansionId(val name: String)
+data class ExpansionsJsonRoot(val expansionIds: Set<ExpansionId>)
+data class CardId(val expansionId: String, val index: Int, val name: String)
+data class ExpansionJsonRoot(val cardIds: Set<CardId>)
 
 interface Scraper {
-    fun scrapeForExpansions(): ExpansionsRoot
-    fun scrapeForCards(root: ExpansionsRoot): Set<CardsRoot>
+    fun scrapeForExpansionIds(): Set<String>
+    fun scrapeExpansionForCards(expansion: String): Set<CardId>
 }
 
 data class BulbapediaScraper(
     val downloader: BulbapediaDownloader,
     val cache: Cache) : Scraper {
-    override fun scrapeForCards(root: ExpansionsRoot): Set<CardsRoot> {
-         return root.expansions.map{it.name}.map {expansion ->
-            val cacheId = "expansions/$expansion.json"
-            val gson = Gson()
-            val bytes = cache.computeIfAbsent(cacheId) {
-                val html = downloader.downloadExpansionDocument(expansion)
 
-                val cardP = "([^\"]+)"
-                val indexP = "([0-9]+)"
-                val expansionP = expansion.toBulbapedia()
-                val cardPattern = Pattern.compile("<a href=\"/wiki/${cardP}_\\(${expansionP}_$indexP\\)")
-
-                val matcher = cardPattern.matcher(html)
-                val cards = matcher.listOfGroups()
-                    .map { Card(expansion = expansion, index = it[2].toInt(), name = it[1].fromBulpapedia() ) }
-                    .toList()
-
-                gson.toJson(CardsRoot(cards = cards.toSet())).toUtf8ByteArray()
-            }
-            gson.fromJson(bytes.toUtf8String(), CardsRoot::class.java)
-        }.toSet()
-    }
-
-    override fun scrapeForExpansions(): ExpansionsRoot {
-        val cacheId = "metadata/expansions.json"
+    override fun scrapeForExpansionIds(): Set<String> {
+        val cacheId = "metadata/expansionIds.json"
         val gson = Gson()
 
         val bytes = cache.computeIfAbsent(cacheId) {
@@ -68,15 +46,36 @@ data class BulbapediaScraper(
             val expansionPattern = Pattern.compile("""<td> <a href="/wiki/([^"]*)_\(TCG\)""")
 
             val matcher = expansionPattern.matcher(html)
-            val expansions = mutableSetOf<Expansion>()
+            val expansions = mutableSetOf<ExpansionId>()
 
             while (matcher.find()) {
-                expansions.add(Expansion(name = matcher.group(1).fromBulpapedia()))
+                expansions.add(ExpansionId(name = matcher.group(1).fromBulpapedia()))
             }
 
-            gson.toJson(ExpansionsRoot(expansions = expansions)).toUtf8ByteArray()
+            gson.toJson(ExpansionsJsonRoot(expansionIds = expansions)).toUtf8ByteArray()
         }
-        return gson.fromJson(bytes.toUtf8String(), ExpansionsRoot::class.java)
+        return gson.fromJson(bytes.toUtf8String(), ExpansionsJsonRoot::class.java).expansionIds.map { it.name }.toSet()
+    }
+
+    override fun scrapeExpansionForCards(expansion: String): Set<CardId> {
+        val cacheId = "expansions/$expansion.json"
+        val gson = Gson()
+        val bytes = cache.computeIfAbsent(cacheId) {
+            val html = downloader.downloadExpansionDocument(expansion)
+
+            val cardP = "([^\"]+)"
+            val indexP = "([0-9]+)"
+            val expansionP = expansion.toBulbapedia()
+            val cardPattern = Pattern.compile("<a href=\"/wiki/${cardP}_\\(${expansionP}_$indexP\\)")
+
+            val matcher = cardPattern.matcher(html)
+            val cards = matcher.listOfGroups()
+                .map { CardId(expansionId = expansion, index = it[2].toInt(), name = it[1].fromBulpapedia() ) }
+                .toList()
+
+            gson.toJson(ExpansionJsonRoot(cardIds = cards.toSet())).toUtf8ByteArray()
+        }
+        return gson.fromJson(bytes.toUtf8String(), ExpansionJsonRoot::class.java).cardIds
     }
 }
 
