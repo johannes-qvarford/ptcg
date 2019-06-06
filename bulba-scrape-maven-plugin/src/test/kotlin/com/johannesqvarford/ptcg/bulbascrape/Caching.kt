@@ -1,4 +1,4 @@
-package com.johannesqvarford.bulbascrape
+package com.johannesqvarford.ptcg.bulbascrape
 
 import java.nio.file.Files
 import java.nio.file.Path

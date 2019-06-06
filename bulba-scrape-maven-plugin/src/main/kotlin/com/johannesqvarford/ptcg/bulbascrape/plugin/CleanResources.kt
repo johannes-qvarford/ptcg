@@ -1,4 +1,4 @@
-package com.johannesqvarford.bulbascrape.plugin
+package com.johannesqvarford.ptcg.bulbascrape.plugin
 
 import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.LifecyclePhase

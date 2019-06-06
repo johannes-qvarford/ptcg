@@ -1,6 +1,8 @@
-package com.johannesqvarford.bulbascrape
+package com.johannesqvarford.ptcg.bulbascrape
 
 import com.google.gson.Gson
+import com.johannesqvarford.ptcg.models.CardId
+import com.johannesqvarford.ptcg.models.PokemonCard
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -24,17 +26,21 @@ private fun Matcher.groups(): Sequence<String> {
 
 data class ExpansionId(val name: String)
 data class ExpansionsJsonRoot(val expansionIds: Set<ExpansionId>)
-data class CardId(val expansionId: String, val index: Int, val name: String)
 data class ExpansionJsonRoot(val cardIds: Set<CardId>)
 
 interface Scraper {
     fun scrapeForExpansionIds(): Set<String>
     fun scrapeExpansionForCards(expansion: String): Set<CardId>
+    fun parseCard(card: CardId): PokemonCard
 }
 
 data class BulbapediaScraper(
     val downloader: BulbapediaDownloader,
-    val cache: Cache) : Scraper {
+    val cache: Cache
+) : Scraper {
+    override fun parseCard(card: CardId): PokemonCard {
+        throw NotImplementedError()
+    }
 
     override fun scrapeForExpansionIds(): Set<String> {
         val cacheId = "metadata/expansionIds.json"
@@ -49,7 +55,7 @@ data class BulbapediaScraper(
             val expansions = mutableSetOf<ExpansionId>()
 
             while (matcher.find()) {
-                expansions.add(ExpansionId(name = matcher.group(1).fromBulpapedia()))
+                expansions.add(ExpansionId(name = matcher.group(1).fromBulbapedia()))
             }
 
             gson.toJson(ExpansionsJsonRoot(expansionIds = expansions)).toUtf8ByteArray()
@@ -70,7 +76,13 @@ data class BulbapediaScraper(
 
             val matcher = cardPattern.matcher(html)
             val cards = matcher.listOfGroups()
-                .map { CardId(expansionId = expansion, index = it[2].toInt(), name = it[1].fromBulpapedia() ) }
+                .map {
+                    CardId(
+                        expansionId = expansion,
+                        index = it[2].toInt(),
+                        name = it[1].fromBulbapedia()
+                    )
+                }
                 .toList()
 
             gson.toJson(ExpansionJsonRoot(cardIds = cards.toSet())).toUtf8ByteArray()

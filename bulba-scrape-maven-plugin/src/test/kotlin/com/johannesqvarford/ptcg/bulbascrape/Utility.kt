@@ -1,4 +1,4 @@
-package com.johannesqvarford.bulbascrape
+package com.johannesqvarford.ptcg.bulbascrape
 
 class NoCache : Cache {
     override fun computeIfAbsent(id: String, compute: () -> ByteArray): ByteArray {
@@ -6,7 +6,7 @@ class NoCache : Cache {
     }
 }
 
-class ResourcesBulbapediaDownloader() : BulbapediaDownloader {
+class ResourcesBulbapediaDownloader : BulbapediaDownloader {
 
     override fun downloadExpansionsDocument() =
         readFromClasspath("wiki/List_of_Pok%C3%A9mon_Trading_Card_Game_expansions").toUtf8String()
@@ -25,3 +25,4 @@ class ResourcesBulbapediaDownloader() : BulbapediaDownloader {
             .use { it.readAllBytes() }
     }
 }
+

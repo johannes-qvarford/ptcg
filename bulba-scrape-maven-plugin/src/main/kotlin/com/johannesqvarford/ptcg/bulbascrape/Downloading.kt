@@ -1,4 +1,4 @@
-package com.johannesqvarford.bulbascrape
+package com.johannesqvarford.ptcg.bulbascrape
 
 import java.net.URI
 import java.net.http.HttpClient
@@ -22,11 +22,12 @@ fun String.toBulbapedia() =
     this.replace(' ', '_')
         .replace("%26", "&")
 
-fun String.fromBulpapedia() =
+fun String.fromBulbapedia() =
     this.replace('_', ' ')
         .replace("&", "%26")
 
-data class WebBulbapediaDownloader(val client: HttpClient, val cache: Cache) : BulbapediaDownloader {
+data class WebBulbapediaDownloader(val client: HttpClient, val cache: Cache) :
+    BulbapediaDownloader {
 
     override fun downloadExpansionsDocument() = getWiki("List_of_Pok%C3%A9mon_Trading_Card_Game_expansions")
 

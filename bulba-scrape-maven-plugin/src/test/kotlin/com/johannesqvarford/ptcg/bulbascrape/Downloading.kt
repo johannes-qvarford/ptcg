@@ -1,4 +1,4 @@
-package com.johannesqvarford.bulbascrape
+package com.johannesqvarford.ptcg.bulbascrape
 
 import java.net.http.HttpClient
 import kotlin.test.Test

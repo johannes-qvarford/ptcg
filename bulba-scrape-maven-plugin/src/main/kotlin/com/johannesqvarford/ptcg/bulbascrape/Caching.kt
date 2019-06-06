@@ -1,4 +1,4 @@
-package com.johannesqvarford.bulbascrape
+package com.johannesqvarford.ptcg.bulbascrape
 
 import java.io.IOException
 import java.nio.file.Path
