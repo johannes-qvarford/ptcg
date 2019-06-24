@@ -1,0 +1,8 @@
+#* @vtlvariable name="message" type="java.lang.String" *#
+
+<html>
+<body>
+<h1>Error 404</h1>
+<p>${message}</p>
+</body>
+</html>

@@ -1,0 +1,8 @@
+#* @vtlvariable name="model" type="com.johannesqvarford.ptcgapp.Pack" *#
+
+<html>
+<body>
+<h1>Pack $model.id</h1>
+<p>${model.cardIds}</p>
+</body>
+</html>
