@@ -7,8 +7,11 @@ This is currently a WIP and will probably change significantly before it's finis
 
 ## Roadmap
 
-* Scrape Bulbapedia for base set.
-* Package scraped data for web app.
+Was going to scrape Bulbapedia for PTCG cards and packs, but the PokemonTCG project seems much nicer to use.
+Will start by using the API, and maybe move towards bundling the data in the app instead at a later time. 
+
+* ~~Scrape Bulbapedia for base set.~~
+* ~~Package scraped data for web app.~~
 * Open packs.
 * View album.
 * Login for single user.
